@@ -5,6 +5,7 @@ import { AlertTriangle } from 'lucide-react-native'
 import type { Plant } from '@/data/plant.schema'
 import { imageMap } from '@/data/imageMap'
 import { colors } from '@/theme/colors'
+import { BeginnerBadge } from './BeginnerBadge'
 
 type Props = {
   plant: Plant
@@ -56,6 +57,11 @@ export function PlantCard({ plant, variant = 'list' }: Props) {
           >
             {plant.shortDescription}
           </Text>
+          {plant.beginnerFriendly && (
+            <View className="flex-row mt-2">
+              <BeginnerBadge />
+            </View>
+          )}
         </View>
       </Pressable>
     </Link>
