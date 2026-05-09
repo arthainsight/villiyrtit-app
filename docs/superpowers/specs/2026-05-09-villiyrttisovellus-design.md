@@ -46,7 +46,7 @@ Suomalainen mobiilisovellus kesä–heinäkuun villiyrttien tunnistamiseen ja k�
 
 | Päätös | Valinta | Perustelu |
 |---|---|---|
-| Runtime | **Expo SDK** (uusin vakaa, lukitaan toteutuksen alussa) | Helpoin Android-build, EAS-deploy myöhemmin |
+| Runtime | **Expo SDK 54** (lukittu `~54.0.33`, 2026-05-09) | Helpoin Android-build, EAS-deploy myöhemmin |
 | Kieli | **TypeScript strict** | Plant-tyyppi vahvana läpi koodin; tyyppi johdetaan Zod-schemasta |
 | Reititys | **Expo Router** (file-based) | Yksinkertainen, modulaarinen, tukee deep linkejä |
 | Tyylit | **NativeWind v4** + `tailwind.config.js` | Tailwind-ajattelu; dark mode `dark:`-luokilla |
