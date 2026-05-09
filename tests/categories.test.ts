@@ -38,3 +38,61 @@ describe('categories', () => {
     expect(categoryLabels.piha).toBe('Piha')
   })
 })
+
+describe('categories.piha — eksplisiittiset habitat-keywordit', () => {
+  const make = (id: string, habitats: string[]): Plant => ({
+    ...validPlantInput,
+    id,
+    habitats,
+  })
+
+  it('pellonpiennat matchaa Piha (taivutusmuoto, ei pelkkä `pelto`-substring)', () => {
+    expect(categories.piha([make('a', ['pellonpiennat'])])[0]?.id).toBe('a')
+  })
+
+  it('pellonpiennar (yksikkö) matchaa Piha', () => {
+    expect(categories.piha([make('a', ['pellonpiennar'])])[0]?.id).toBe('a')
+  })
+
+  it('pellot (peltojen monikko) matchaa Piha', () => {
+    expect(categories.piha([make('a', ['pellot'])])[0]?.id).toBe('a')
+  })
+
+  it('nurmikot matchaa Piha', () => {
+    expect(categories.piha([make('a', ['nurmikot'])])[0]?.id).toBe('a')
+  })
+
+  it('niityt matchaa Piha', () => {
+    expect(categories.piha([make('a', ['niityt'])])[0]?.id).toBe('a')
+  })
+
+  it('tienvarret matchaa Piha', () => {
+    expect(categories.piha([make('a', ['tienvarret'])])[0]?.id).toBe('a')
+  })
+
+  it('joutomaa matchaa Piha', () => {
+    expect(categories.piha([make('a', ['joutomaa'])])[0]?.id).toBe('a')
+  })
+
+  it('vanhat metsät EI matchaa Piha', () => {
+    expect(categories.piha([make('a', ['vanhat metsät'])])).toEqual([])
+  })
+
+  it('havumetsät EI matchaa Piha', () => {
+    expect(categories.piha([make('a', ['havumetsät'])])).toEqual([])
+  })
+
+  it('rantaniittyä matchaa Piha (sisältää niit-stem)', () => {
+    expect(categories.piha([make('a', ['rantaniityt'])])[0]?.id).toBe('a')
+  })
+
+  it('puhtaat vesistöt/rannat ilman piha-keyword EIVÄT matchaa', () => {
+    expect(categories.piha([make('a', ['vesistö'])])).toEqual([])
+    expect(categories.piha([make('a', ['rantakallio'])])).toEqual([])
+    expect(categories.piha([make('a', ['ojanvarret'])])).toEqual([])
+  })
+
+  it('case-insensitive: PELLONPIENNAT matchaa', () => {
+    expect(categories.piha([make('a', ['PELLONPIENNAT'])])[0]?.id).toBe('a')
+  })
+})
