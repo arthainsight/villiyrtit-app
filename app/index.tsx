@@ -16,7 +16,7 @@ export default function Home() {
   const searchQuery = useAppStore((s) => s.searchQuery)
 
   useEffect(() => {
-    if (searchQuery.length > 0) router.push('/plants')
+    if (searchQuery.length > 0) router.replace('/plants')
   }, [searchQuery, router])
 
   return (
