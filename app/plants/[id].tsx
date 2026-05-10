@@ -23,13 +23,15 @@ export default function PlantDetail() {
   const dangerousLookalikes = plant.lookalikes.filter(
     (l) => l.dangerLevel === 'korkea' || l.dangerLevel === 'kuolettava'
   )
+  const hasDanger = dangerousLookalikes.length > 0
+  const lookalikesTitle = hasDanger ? 'Vaaralliset näköislajit' : 'Näköislajit'
 
   return (
     <ScrollView className="bg-canvas dark:bg-canvas-dark" contentContainerStyle={{ paddingBottom: 48 }}>
       <PlantHero plant={plant} />
 
       <View className="px-5 pt-5">
-        <DangerCallout severity="warn">{plant.safetyNote}</DangerCallout>
+        <DangerCallout severity={hasDanger ? 'danger' : 'warn'}>{plant.safetyNote}</DangerCallout>
       </View>
 
       <View className="flex-row gap-2 px-5 py-4">
@@ -94,7 +96,7 @@ export default function PlantDetail() {
           </View>
         </CollapsibleSection>
 
-        <CollapsibleSection title="Vaaralliset näköislajit" defaultOpen={dangerousLookalikes.length > 0}>
+        <CollapsibleSection title={lookalikesTitle} defaultOpen={hasDanger}>
           <View className="gap-3">
             {plant.lookalikes.map((l, i) => {
               const isDangerous = l.dangerLevel === 'korkea' || l.dangerLevel === 'kuolettava'
@@ -114,7 +116,9 @@ export default function PlantDetail() {
               )
             })}
             {plant.lookalikes.length === 0 && (
-              <Text className="font-sans text-[14px] text-muted dark:text-muted-dark italic">Ei tunnettuja näköislajeja.</Text>
+              <Text className="font-sans text-[14px] text-muted dark:text-muted-dark italic">
+                Ei tunnettuja näköislajeja Suomen luonnossa.
+              </Text>
             )}
           </View>
         </CollapsibleSection>

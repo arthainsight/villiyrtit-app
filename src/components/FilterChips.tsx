@@ -56,6 +56,9 @@ export function FilterChips() {
           <Pressable
             key={chip.kind + ('value' in chip ? chip.value : '')}
             onPress={() => onPress(chip)}
+            accessibilityRole="button"
+            accessibilityLabel={`Suodata: ${chip.label}`}
+            accessibilityState={{ selected: active }}
             className={`h-10 px-4 rounded-btn justify-center ${active ? 'bg-primary dark:bg-primary-dark' : 'bg-surface dark:bg-surface-dark border border-zinc-200 dark:border-zinc-800'}`}
           >
             <Text
@@ -67,7 +70,12 @@ export function FilterChips() {
         )
       })}
       {anyActive && (
-        <Pressable onPress={resetFilters} className="h-10 px-4 rounded-btn justify-center">
+        <Pressable
+          onPress={resetFilters}
+          accessibilityRole="button"
+          accessibilityLabel="Tyhjennä kaikki suodattimet"
+          className="h-10 px-4 rounded-btn justify-center"
+        >
           <Text className="font-sans text-[14px] text-accent dark:text-accent-dark underline">Tyhjennä</Text>
         </Pressable>
       )}

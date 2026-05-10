@@ -1,4 +1,4 @@
-import { Pressable, Text, View } from 'react-native'
+import { Pressable, Text, View, useColorScheme } from 'react-native'
 import { ChevronDown } from 'lucide-react-native'
 import { useState, type ReactNode } from 'react'
 import Animated, { LinearTransition } from 'react-native-reanimated'
@@ -12,6 +12,8 @@ type Props = {
 
 export function CollapsibleSection({ title, defaultOpen = false, children }: Props) {
   const [open, setOpen] = useState(defaultOpen)
+  const scheme = useColorScheme()
+  const chevronColor = scheme === 'dark' ? colors.dark.muted : colors.light.muted
   return (
     <Animated.View
       layout={LinearTransition.duration(180)}
@@ -28,7 +30,7 @@ export function CollapsibleSection({ title, defaultOpen = false, children }: Pro
           {title}
         </Text>
         <View style={{ transform: [{ rotate: open ? '180deg' : '0deg' }] }}>
-          <ChevronDown size={20} color={colors.light.muted} />
+          <ChevronDown size={20} color={chevronColor} />
         </View>
       </Pressable>
       {open && <View className="pb-4">{children}</View>}

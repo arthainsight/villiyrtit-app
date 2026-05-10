@@ -1,7 +1,8 @@
-import { ScrollView, Text, View } from 'react-native'
+import { Pressable, ScrollView, Text, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useEffect } from 'react'
-import { useRouter } from 'expo-router'
+import { Link, useRouter } from 'expo-router'
+import { ArrowRight } from 'lucide-react-native'
 import { plants } from '@/data/plants'
 import { categories, categoryLabels } from '@/data/categories'
 import { capitalize } from '@/lib/months'
@@ -9,11 +10,13 @@ import { usePlants } from '@/hooks/usePlants'
 import { CategoryRow } from '@/components/CategoryRow'
 import { SearchBar } from '@/components/SearchBar'
 import { useAppStore } from '@/store/useAppStore'
+import { colors } from '@/theme/colors'
 
 export default function Home() {
   const router = useRouter()
   const { featured, currentMonth: month } = usePlants()
   const searchQuery = useAppStore((s) => s.searchQuery)
+  const totalPlants = plants.length
 
   useEffect(() => {
     if (searchQuery.length === 0) return
@@ -55,6 +58,21 @@ export default function Home() {
           <CategoryRow title={categoryLabels.teekasvit} plants={categories.teekasvit(plants)} />
           <CategoryRow title={categoryLabels.metsa} plants={categories.metsa(plants)} />
           <CategoryRow title={categoryLabels.piha} plants={categories.piha(plants)} />
+        </View>
+
+        <View className="px-5 pt-10">
+          <Link href="/plants" asChild>
+            <Pressable
+              accessibilityRole="link"
+              accessibilityLabel={`Näytä kaikki ${totalPlants} kasvia`}
+              className="flex-row items-center justify-center gap-2 h-touch rounded-btn bg-primary dark:bg-primary-dark active:opacity-80"
+            >
+              <Text className="font-sansSemibold text-[16px] text-canvas dark:text-canvas-dark">
+                Näytä kaikki {totalPlants} kasvia
+              </Text>
+              <ArrowRight size={18} color={colors.light.canvas} />
+            </Pressable>
+          </Link>
         </View>
       </ScrollView>
     </SafeAreaView>
