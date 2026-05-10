@@ -16,7 +16,9 @@ export default function Home() {
   const searchQuery = useAppStore((s) => s.searchQuery)
 
   useEffect(() => {
-    if (searchQuery.length > 0) router.replace('/plants')
+    if (searchQuery.length === 0) return
+    const id = setTimeout(() => router.replace('/plants'), 200)
+    return () => clearTimeout(id)
   }, [searchQuery, router])
 
   return (
