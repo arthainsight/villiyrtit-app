@@ -3,11 +3,13 @@ import { useLocalSearchParams, useRouter } from 'expo-router'
 import { useEffect } from 'react'
 import { plants } from '@/data/plants'
 import { capitalize } from '@/lib/months'
+import { useAppStore } from '@/store/useAppStore'
 import { PlantHero } from '@/components/PlantHero'
 import { DangerCallout } from '@/components/DangerCallout'
 import { DifficultyBadge } from '@/components/DifficultyBadge'
 import { BeginnerBadge } from '@/components/BeginnerBadge'
 import { CollapsibleSection } from '@/components/CollapsibleSection'
+import { HighRiskGate } from '@/components/HighRiskGate'
 
 export default function PlantDetail() {
   const { id } = useLocalSearchParams<{ id: string }>()
@@ -24,6 +26,11 @@ export default function PlantDetail() {
     (l) => l.dangerLevel === 'korkea' || l.dangerLevel === 'kuolettava'
   )
   const hasDanger = dangerousLookalikes.length > 0
+  const hasKuolettavaLookalike = plant.lookalikes.some((l) => l.dangerLevel === 'kuolettava')
+  const isHighRisk = plant.difficulty === 'hard' || hasKuolettavaLookalike
+  const acknowledged = useAppStore((s) => s.acknowledgedHighRisk.has(plant.id))
+  const acknowledgeHighRisk = useAppStore((s) => s.acknowledgeHighRisk)
+  const showGate = isHighRisk && !acknowledged
   const lookalikesTitle = hasDanger ? 'Vaaralliset näköislajit' : 'Näköislajit'
 
   return (
@@ -34,25 +41,33 @@ export default function PlantDetail() {
         <DangerCallout severity={hasDanger ? 'danger' : 'warn'}>{plant.safetyNote}</DangerCallout>
       </View>
 
-      <View className="flex-row gap-2 px-5 py-4">
-        <DifficultyBadge difficulty={plant.difficulty} />
-        {plant.beginnerFriendly && <BeginnerBadge />}
-      </View>
+      {showGate && (
+        <HighRiskGate onAcknowledge={() => acknowledgeHighRisk(plant.id)} />
+      )}
 
-      <View className="px-5 pb-2">
-        <Text className="font-sans text-[14px] text-muted dark:text-muted-dark">
-          Löytyy: {plant.months.map((m) => capitalize(m)).join(', ')}
-        </Text>
-      </View>
+      <View
+        pointerEvents={showGate ? 'none' : 'auto'}
+        style={{ opacity: showGate ? 0.35 : 1 }}
+      >
+        <View className="flex-row gap-2 px-5 py-4">
+          <DifficultyBadge difficulty={plant.difficulty} />
+          {plant.beginnerFriendly && <BeginnerBadge />}
+        </View>
 
-      <View className="px-5 py-3">
-        <Text className="font-sans text-[16px] text-ink dark:text-ink-dark leading-[1.5]">
-          {plant.description}
-        </Text>
-      </View>
+        <View className="px-5 pb-2">
+          <Text className="font-sans text-[14px] text-muted dark:text-muted-dark">
+            Löytyy: {plant.months.map((m) => capitalize(m)).join(', ')}
+          </Text>
+        </View>
 
-      <View className="px-5">
-        <CollapsibleSection title="Tunnistus" defaultOpen>
+        <View className="px-5 py-3">
+          <Text className="font-sans text-[16px] text-ink dark:text-ink-dark leading-[1.5]">
+            {plant.description}
+          </Text>
+        </View>
+
+        <View className="px-5">
+          <CollapsibleSection title="Tunnistus" defaultOpen>
           <Text className="font-sans text-[16px] text-ink dark:text-ink-dark leading-[1.5]">
             {plant.shortDescription}
           </Text>
@@ -122,6 +137,7 @@ export default function PlantDetail() {
             )}
           </View>
         </CollapsibleSection>
+        </View>
       </View>
     </ScrollView>
   )

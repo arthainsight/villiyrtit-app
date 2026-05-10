@@ -12,6 +12,9 @@ type AppState = {
   toggleTag: (t: Tag) => void
   setBeginnerOnly: (v: boolean) => void
   resetFilters: () => void
+
+  acknowledgedHighRisk: ReadonlySet<string>
+  acknowledgeHighRisk: (id: string) => void
 }
 
 const toggle = <T>(arr: T[], item: T): T[] =>
@@ -27,4 +30,8 @@ export const useAppStore = create<AppState>((set) => ({
   toggleTag: (t) => set((s) => ({ filters: { ...s.filters, tags: toggle(s.filters.tags, t) } })),
   setBeginnerOnly: (v) => set((s) => ({ filters: { ...s.filters, beginnerFriendlyOnly: v } })),
   resetFilters: () => set({ filters: emptyFilters() }),
+
+  acknowledgedHighRisk: new Set<string>(),
+  acknowledgeHighRisk: (id) =>
+    set((s) => ({ acknowledgedHighRisk: new Set(s.acknowledgedHighRisk).add(id) })),
 }))
